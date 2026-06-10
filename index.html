@@ -725,10 +725,11 @@ const BUFFER_HIGH = 4 * 1024 * 1024; // Pause threshold: 4MB
 // ── GOD MODE ICE CONFIG GENERATOR ───────────────────────────────────
 function getPeerConfig() {
   let customKey = '';
-  let sigUrl = '';
+  let sigUrl = 'syncdrop-server.onrender.com'; // Hardcoded custom default
   try {
     customKey = localStorage.getItem('syncdrop_turn_key');
-    sigUrl = localStorage.getItem('syncdrop_sig_url');
+    const savedSigUrl = localStorage.getItem('syncdrop_sig_url');
+    if (savedSigUrl && savedSigUrl.trim().length > 0) sigUrl = savedSigUrl;
   } catch(e) {
     console.warn("localStorage is disabled in this environment.");
   }
