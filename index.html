@@ -1155,12 +1155,12 @@ const MAX_SIZE = 500 * 1024 * 1024;
 
 // ── GOD MODE: 256KB chunks = optimal for Chromium DataChannel
 // Chrome's SCTP implementation fragments at 256KB; larger = kernel drops
-const CHUNK_SIZE = 256 * 1024;
+const CHUNK_SIZE = 16 * 1024;
 
 // bufferedAmountLowThreshold: drain below 2MB before sending more
 // This prevents DataChannel queue overflow on slow networks
 const BUFFER_LOW  = 512 * 1024;   // Resume threshold: 512KB
-const BUFFER_HIGH = 4 * 1024 * 1024; // Pause threshold: 4MB
+const BUFFER_HIGH = 1 * 1024 * 1024; // Pause threshold: 4MB
 
 // ── GOD MODE ICE CONFIG GENERATOR ───────────────────────────────────
 async function getPeerConfig() {
