@@ -2181,22 +2181,35 @@ const origUpdatePreview = updateFilePreviewList;
 updateFilePreviewList = function() {
     origUpdatePreview();
     if(selectedFiles.length > 0 && typeof activeConnections !== 'undefined' && activeConnections.length > 0) {
-        activeConnections.forEach(conn => {
-            if(conn.open) {
-                console.log("Auto-sending files!");
+        let sent = false;
+        
+        // Clean up closed connections first
+        activeConnections = activeConnections.filter(c => c && (c.open || !c.peerConnection || c.peerConnection.signalingState !== 'closed'));
+        
+        // Try to send on the first open connection
+        for (let i = 0; i < activeConnections.length; i++) {
+            const conn = activeConnections[i];
+            if (conn.open) {
+                console.log("Auto-sending files over connection!");
                 if(typeof sendInChunks === 'function') sendInChunks(conn);
-            } else {
-                console.warn("Connection not fully open yet. Queuing send.");
-                conn.on('open', () => {
-                    if(selectedFiles.length > 0) {
-                        console.log("Channel opened, sending queued files!");
-                        setTimeout(() => {
-                            if(typeof sendInChunks === 'function') sendInChunks(conn);
-                        }, 500);
-                    }
-                });
+                sent = true;
+                break;
             }
-        });
+        }
+        
+        // If none are open yet, queue it on the most recently added connection
+        if (!sent && activeConnections.length > 0) {
+            const conn = activeConnections[activeConnections.length - 1];
+            console.warn("Connection not fully open yet. Queuing send.");
+            conn.on('open', () => {
+                if(selectedFiles.length > 0) {
+                    console.log("Channel opened, sending queued files!");
+                    setTimeout(() => {
+                        if(typeof sendInChunks === 'function') sendInChunks(conn);
+                    }, 500);
+                }
+            });
+        }
     } else if (selectedFiles.length > 0) {
         alert("Please connect to a device first!");
         selectedFiles.length = 0; // Clear files if not connected
