@@ -1164,65 +1164,16 @@ const BUFFER_HIGH = 1 * 1024 * 1024; // Pause threshold: 4MB
 
 // ── GOD MODE ICE CONFIG GENERATOR ───────────────────────────────────
 async function getPeerConfig() {
-  let customKey = '';
-  let sigUrl = 'syncdrop-server.onrender.com'; // Default to backend server
-  try {
-    customKey = localStorage.getItem('syncdrop_turn_key');
-    const savedSigUrl = localStorage.getItem('syncdrop_sig_url');
-    if (savedSigUrl && savedSigUrl.trim().length > 0) sigUrl = savedSigUrl;
-  } catch(e) {
-    console.warn("localStorage is disabled in this environment.");
-  }
-  
-  let options = {
+  return {
     debug: 2,
     config: {
-      iceServers: []
-    }
-  };
-
-  let host = '';
-  if (sigUrl && sigUrl.trim().length > 0) {
-    host = sigUrl.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
-    options.host = host;
-    options.port = 443;
-    options.secure = true;
-    options.path = '/peerjs';
-  } else {
-    // If running on a server that hosts both frontend and backend
-    options.host = window.location.hostname;
-    options.port = window.location.port || (window.location.protocol === 'https:' ? 443 : 80);
-    options.path = '/peerjs';
-  }
-
-  // If user provided a custom API key, use Metered's TURN + Custom STUN
-  if (customKey && customKey.trim().length > 5) {
-    const key = customKey.trim();
-    options.config.iceServers = [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun.cloudflare.com:3478' },
-      {
-        urls: [
-          `turn:${key}.relay.metered.ca:80`,
-          `turn:${key}.relay.metered.ca:443`,
-          `turn:${key}.relay.metered.ca:443?transport=tcp`
-        ],
-        username: key,
-        credential: key
-      }
-    ];
-  } else {
-    // Hardcoded robust STUN servers (TURN removed per request)
-    if (!options.config.iceServers || options.config.iceServers.length === 0) {
-      options.config.iceServers = [
+      iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
         { urls: 'stun:stun.cloudflare.com:3478' },
         { urls: 'stun:stun.services.mozilla.com' }
-      ];
+      ]
     }
-  }
-
-  return options;
+  };
 }
 
 // ── BINARY WIRE PROTOCOL ────────────────────────────────────────────
