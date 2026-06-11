@@ -3,16 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SyncDrop — Premium P2P Sharing</title>
+<title>SyncDrop — Premium P2P</title>
 <link rel="icon" href="https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <style>
 :root {
   --primary: #007AFF; /* Premium iOS-like Blue */
@@ -350,8 +348,429 @@ body::before {
   .orbit-ring { width: 100%; height: 100%; }
 }
 </style>
+<style>
+:root {
+  --primary: #3B82F6;
+  --bg-desktop: #0F172A;
+  --bg-app: #000000;
+  --card-bg: #111111;
+  --text-main: #FFFFFF;
+  --text-muted: #9CA3AF;
+  --border: #333333;
+  --squircle-bg: #1F2937;
+  --success: #10B981;
+  --danger: #EF4444;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+[data-theme="light"] {
+  --bg-desktop: #F8FAFC;
+  --bg-app: #FFFFFF;
+  --card-bg: #F1F5F9;
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --border: #E2E8F0;
+  --squircle-bg: #E2E8F0;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-desktop);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s;
+}
+/* Top Bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: bold;
+}
+.brand img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+.toggles {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.toggle-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.1);
+  padding: 4px;
+  border-radius: 20px;
+}
+[data-theme="light"] .toggle-group { background: rgba(0,0,0,0.05); }
+.toggle-btn {
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: 0.2s;
+}
+.toggle-btn.active {
+  background: var(--text-main);
+  color: var(--bg-desktop);
+}
+
+/* Device Wrapper */
+.main-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.device-wrapper {
+  width: 390px;
+  height: 844px;
+  border-radius: 55px;
+  border: 14px solid #1a1a1a;
+  background: var(--bg-app);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+.device-notch {
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 30px;
+  background: #1a1a1a;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  z-index: 10;
+}
+body[data-mode="desktop"] .device-wrapper {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  min-height: 600px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+body[data-mode="desktop"] .device-notch { display: none; }
+
+/* App Content */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 60px 24px 40px;
+}
+body[data-mode="desktop"] .app-content { padding: 40px; }
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.app-title { font-size: 28px; font-weight: bold; }
+.app-header .material-icons-round { color: var(--text-muted); font-size: 24px; cursor: pointer; }
+
+/* Connection Card */
+.conn-card {
+  background: linear-gradient(135deg, #3B82F6, #6366F1);
+  border-radius: 24px;
+  padding: 24px;
+  color: white;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+}
+.conn-card::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 150px; height: 150px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+.conn-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.conn-icon {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.conn-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.conn-status { font-size: 13px; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 6px; }
+.status-dot { width: 8px; height: 8px; background: #10B981; border-radius: 50%; }
+.conn-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
+.conn-ip { font-family: monospace; font-size: 14px; opacity: 0.9; }
+.btn-glass {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+/* Connection Inputs (Disconnected State) */
+.connect-inputs { margin-top: 16px; display: flex; gap: 10px; }
+.connect-input {
+  flex: 1;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 12px;
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+.connect-input::placeholder { color: rgba(255,255,255,0.5); }
+
+/* Quick Actions */
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.quick-btn {
+  background: var(--squircle-bg);
+  border-radius: 20px;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: 0.2s;
+}
+.quick-btn:hover { border-color: var(--border); transform: translateY(-2px); }
+.quick-btn img { width: 32px; height: 32px; }
+.quick-label { font-size: 12px; font-weight: 600; color: var(--text-main); }
+
+/* Storage Card */
+.storage-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+.storage-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; font-weight: 600; }
+.storage-header span:last-child { color: var(--text-muted); font-weight: 400; }
+.progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; display: flex; overflow: hidden; margin-bottom: 12px; }
+[data-theme="light"] .progress-bar { background: rgba(0,0,0,0.05); }
+.prog-photos { width: 40%; background: #3B82F6; }
+.prog-docs { width: 30%; background: #10B981; }
+.prog-other { width: 10%; background: #F59E0B; }
+.storage-legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+/* Recent */
+.recent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.recent-title { font-size: 18px; font-weight: bold; }
+.recent-link { color: var(--primary); font-size: 14px; font-weight: 600; cursor: pointer; }
+.recent-list { display: flex; flex-direction: column; gap: 12px; }
+.recent-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.recent-icon { width: 40px; height: 40px; background: var(--squircle-bg); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.recent-info { flex: 1; }
+.recent-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.recent-meta { font-size: 12px; color: var(--text-muted); }
+.recent-status { color: var(--success); font-size: 18px; }
+
+/* Code Modal */
+.modal-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+  z-index: 999; display: flex; justify-content: center; align-items: center;
+  border-radius: inherit;
+  opacity: 0; pointer-events: none; transition: 0.3s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.code-modal-box {
+  background: var(--bg-app); border: 1px solid var(--border);
+  width: 90%; max-width: 500px; border-radius: 24px; padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+.code-modal-header { display: flex; justify-content: space-between; align-items: center; }
+.code-modal-header h3 { font-size: 18px; }
+.code-modal-header .material-icons-round { cursor: pointer; color: var(--text-muted); }
+#modern-code-textarea {
+  width: 100%; height: 200px; background: #111; color: #10B981;
+  font-family: monospace; border: 1px solid #333; border-radius: 12px;
+  padding: 16px; resize: none; outline: none; font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .top-bar { display: none; }
+  .main-area { padding: 0; }
+  .device-wrapper { width: 100%; height: 100vh; border-radius: 0; border: none; box-shadow: none; }
+  .device-notch { display: none; }
+}
+
+/* Hide legacy UI entirely but keep it in DOM for JS */
+#legacy-ui { display: none !important; }
+</style>
 </head>
-<body>
+<body data-theme="dark" data-mode="iphone">
+
+<!-- Top Bar for Desktop -->
+<div class="top-bar">
+  <div class="brand">
+    <img src="https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png" alt="Logo">
+    SyncDrop
+  </div>
+  <div class="toggles">
+    <div class="toggle-group" id="theme-toggle">
+      <button class="toggle-btn" data-val="light">Light</button>
+      <button class="toggle-btn active" data-val="dark">Dark</button>
+    </div>
+    <div class="toggle-group" id="view-toggle">
+      <button class="toggle-btn active" data-val="iphone">iPhone</button>
+      <button class="toggle-btn" data-val="desktop">Desktop</button>
+    </div>
+  </div>
+</div>
+
+<div class="main-area">
+  <div class="device-wrapper">
+    <div class="device-notch"></div>
+    <div class="app-content">
+      
+      <div class="app-header">
+        <div class="app-title">SyncDrop</div>
+        <span class="material-icons-round">settings</span>
+      </div>
+
+      <!-- Connection Card -->
+      <div class="conn-card" id="modern-conn-card">
+        <div class="conn-header">
+          <div class="conn-icon"><span class="material-icons-round">devices</span></div>
+          <div>
+            <div class="conn-title" id="modern-peer-name">Not Connected</div>
+            <div class="conn-status">
+              <div class="status-dot" id="modern-status-dot" style="background:var(--danger)"></div>
+              <span id="modern-status-text">Waiting for connection...</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Disconnected State: Show Code & Input -->
+        <div id="modern-disconnected-state">
+          <div style="font-size:13px; opacity:0.9;">Your Code: <b id="modern-my-code" style="font-size:16px;letter-spacing:1px;">------</b></div>
+          <div class="connect-inputs">
+            <input type="text" id="modern-connect-input" class="connect-input" placeholder="ENTER CODE" maxlength="6">
+            <button class="btn-glass" id="modern-connect-btn" style="background:white; color:#3B82F6;">Connect</button>
+          </div>
+        </div>
+
+        <!-- Connected State: Show IP and Disconnect -->
+        <div class="conn-footer" id="modern-connected-state" style="display:none;">
+          <div class="conn-ip" id="modern-peer-ip">192.168.x.x</div>
+          <button class="btn-glass" id="modern-disconnect-btn">Disconnect</button>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-grid">
+        <div class="quick-btn" id="modern-btn-photos">
+          <span class="material-icons-round" style="font-size:28px; color:#3B82F6;">image</span>
+          <div class="quick-label">Photos</div>
+        </div>
+        <div class="quick-btn" id="modern-btn-files">
+          <span class="material-icons-round" style="font-size:28px; color:#10B981;">description</span>
+          <div class="quick-label">Files</div>
+        </div>
+        <div class="quick-btn" id="modern-btn-folders">
+          <span class="material-icons-round" style="font-size:28px; color:#F59E0B;">folder</span>
+          <div class="quick-label">Folders</div>
+        </div>
+        <div class="quick-btn" id="modern-btn-clip">
+          <span class="material-icons-round" style="font-size:28px; color:#8B5CF6;">content_paste</span>
+          <div class="quick-label">Clipboard</div>
+        </div>
+      </div>
+
+      <!-- Storage Card -->
+      <div class="storage-card">
+        <div class="storage-header">
+          <span>Transfer Stats</span>
+          <span id="modern-transfer-stats">0 MB of 0 MB</span>
+        </div>
+        <div class="progress-bar">
+          <div class="prog-photos" id="modern-prog-bar" style="width: 0%; background: var(--primary);"></div>
+        </div>
+        <div class="storage-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Sent</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>Received</div>
+        </div>
+      </div>
+
+      <!-- Recent -->
+      <div class="recent-header">
+        <div class="recent-title">Recent</div>
+        <div class="recent-link">See All</div>
+      </div>
+      <div class="recent-list" id="modern-recent-list">
+        <!-- populated by JS -->
+        <div class="recent-item" style="opacity: 0.5;">
+          <div class="recent-icon"><span class="material-icons-round">history</span></div>
+          <div class="recent-info">
+            <div class="recent-name">No recent transfers</div>
+            <div class="recent-meta">Transfer files to see them here</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    
+    <!-- Code Share Modal -->
+    <div class="modal-overlay" id="code-modal-overlay">
+      <div class="code-modal-box">
+        <div class="code-modal-header">
+          <h3 id="code-modal-title">Share Code/Text</h3>
+          <span class="material-icons-round" id="close-code-modal">close</span>
+        </div>
+        <textarea id="modern-code-textarea" placeholder="Paste your code or text here..."></textarea>
+        <button id="modern-send-code-execute" class="btn-glass" style="background:#3B82F6; color:white; border:none; padding:12px; font-size:16px;">Send Code</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="legacy-ui">
+
 
 <header class="app-bar">
   <div class="brand">
@@ -693,6 +1112,27 @@ body::before {
     </div>
   </div>
 </div>
+
+
+</div>
+
+<script>
+// --- UI TOGGLES LOGIC ---
+document.getElementById('theme-toggle').addEventListener('click', e => {
+  if(e.target.tagName==='BUTTON') {
+    document.querySelectorAll('#theme-toggle .toggle-btn').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    document.body.setAttribute('data-theme', e.target.dataset.val);
+  }
+});
+document.getElementById('view-toggle').addEventListener('click', e => {
+  if(e.target.tagName==='BUTTON') {
+    document.querySelectorAll('#view-toggle .toggle-btn').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    document.body.setAttribute('data-mode', e.target.dataset.val);
+  }
+});
+</script>
 
 <script>
 // ╔══════════════════════════════════════════════════════════════════╗
@@ -1371,7 +1811,8 @@ function listenForFile(conn){
     if(typeof msg==='string'){
       // Control message
       let obj;try{obj=JSON.parse(msg);}catch(e){return;}
-      if(obj.type==='batch-meta'){
+      if(obj.type==='code-share'){ window.dispatchEvent(new CustomEvent('code-share-received', {detail: obj.content})); }
+      else if(obj.type==='batch-meta'){ 
         receivedBatchMeta=obj;totalBatchSize=obj.totalSize||1;
         const diagEl=document.getElementById('diag-recv-chan');if(diagEl)diagEl.textContent='open';
         console.log('[SyncDrop] Batch meta:',obj.count,'files',fmtBytes(totalBatchSize));
@@ -1634,6 +2075,143 @@ window.addEventListener('load',()=>{
     else{switchTab('receive');document.getElementById('receive-code').value=code.toUpperCase();}
   }
 });
+</script>
+<script>
+// --- MODERN UI BINDINGS ---
+setTimeout(() => {
+  // Sync My Code
+  setInterval(() => {
+    const legacyCode = document.getElementById('my-code').textContent;
+    if(legacyCode && legacyCode.length === 6) {
+      document.getElementById('modern-my-code').textContent = legacyCode;
+    }
+  }, 1000);
+
+  // Connect Button
+  document.getElementById('modern-connect-btn').addEventListener('click', () => {
+    const code = document.getElementById('modern-connect-input').value;
+    if(code) {
+      document.getElementById('receive-code').value = code;
+      if(typeof connectToSender === 'function') connectToSender();
+    }
+  });
+
+  // Action Buttons
+  document.getElementById('modern-btn-photos').addEventListener('click', () => {
+    const input = document.getElementById('file-input');
+    input.setAttribute('accept', 'image/*,video/*');
+    input.click();
+  });
+  document.getElementById('modern-btn-files').addEventListener('click', () => {
+    const input = document.getElementById('file-input');
+    input.removeAttribute('accept');
+    input.click();
+  });
+  document.getElementById('modern-btn-folders').addEventListener('click', () => {
+    alert("Folder upload is supported by dragging a folder into the window.");
+  });
+
+  // Code Share Actions
+  document.getElementById('modern-btn-clip').addEventListener('click', () => {
+    document.getElementById('code-modal-title').textContent = "Share Code/Text";
+    document.getElementById('modern-code-textarea').value = '';
+    document.getElementById('modern-code-textarea').readOnly = false;
+    document.getElementById('modern-send-code-execute').style.display = 'block';
+    document.getElementById('modern-send-code-execute').textContent = 'Send Code';
+    document.getElementById('code-modal-overlay').classList.add('active');
+  });
+
+  document.getElementById('close-code-modal').addEventListener('click', () => {
+    document.getElementById('code-modal-overlay').classList.remove('active');
+  });
+
+  document.getElementById('modern-send-code-execute').addEventListener('click', () => {
+    if(document.getElementById('modern-code-textarea').readOnly) {
+       navigator.clipboard.writeText(document.getElementById('modern-code-textarea').value);
+       alert("Copied to clipboard!");
+       document.getElementById('code-modal-overlay').classList.remove('active');
+       return;
+    }
+
+    const codeContent = document.getElementById('modern-code-textarea').value.trim();
+    if (!codeContent) return;
+    
+    let sent = false;
+    if(typeof activeConnections !== 'undefined') {
+        activeConnections.forEach(conn => {
+            if(conn.open) {
+                conn.send(JSON.stringify({ type: 'code-share', content: codeContent }));
+                sent = true;
+            }
+        });
+    }
+    if(sent) {
+        document.getElementById('code-modal-overlay').classList.remove('active');
+        
+        // Add to Recent List
+        const list = document.getElementById('modern-recent-list');
+        if(list.children[0] && list.children[0].innerText.includes('No recent')) list.innerHTML = '';
+        list.innerHTML = `<div class="recent-item">
+          <div class="recent-icon"><span class="material-icons-round">content_paste</span></div>
+          <div class="recent-info">
+            <div class="recent-name">Shared Snippet</div>
+            <div class="recent-meta">Just now</div>
+          </div>
+          <div class="recent-status"><span class="material-icons-round">check_circle</span></div>
+        </div>` + list.innerHTML;
+
+    } else {
+        alert("No active connections to send code. Please connect first.");
+    }
+  });
+
+  // Listen for received code-share
+  window.addEventListener('code-share-received', (e) => {
+    const code = e.detail;
+    document.getElementById('code-modal-title').textContent = "Received Code/Text";
+    document.getElementById('modern-code-textarea').value = code;
+    document.getElementById('modern-code-textarea').readOnly = true;
+    document.getElementById('modern-send-code-execute').style.display = 'block';
+    document.getElementById('modern-send-code-execute').textContent = 'Copy to Clipboard';
+    document.getElementById('code-modal-overlay').classList.add('active');
+
+    // Add to Recent List
+    const list = document.getElementById('modern-recent-list');
+    if(list.children[0] && list.children[0].innerText.includes('No recent')) list.innerHTML = '';
+    list.innerHTML = `<div class="recent-item">
+      <div class="recent-icon"><span class="material-icons-round">content_copy</span></div>
+      <div class="recent-info">
+        <div class="recent-name">Received Snippet</div>
+        <div class="recent-meta">Just now</div>
+      </div>
+      <div class="recent-status"><span class="material-icons-round">check_circle</span></div>
+    </div>` + list.innerHTML;
+  });
+
+  // Disconnect Button
+  document.getElementById('modern-disconnect-btn').addEventListener('click', () => {
+    window.location.reload(); 
+  });
+
+  // UI State Watcher (Polls legacy status to update modern UI)
+  setInterval(() => {
+    const hasActiveConns = typeof activeConnections !== 'undefined' && activeConnections && activeConnections.length > 0;
+    if (hasActiveConns) {
+      document.getElementById('modern-disconnected-state').style.display = 'none';
+      document.getElementById('modern-connected-state').style.display = 'flex';
+      document.getElementById('modern-peer-name').textContent = "Remote Peer";
+      document.getElementById('modern-status-dot').style.background = 'var(--success)';
+      document.getElementById('modern-status-text').textContent = "Connected";
+    } else {
+      document.getElementById('modern-disconnected-state').style.display = 'block';
+      document.getElementById('modern-connected-state').style.display = 'none';
+      document.getElementById('modern-peer-name').textContent = "Not Connected";
+      document.getElementById('modern-status-dot').style.background = 'var(--danger)';
+      document.getElementById('modern-status-text').textContent = "Waiting for connection...";
+    }
+  }, 1000);
+
+}, 1500);
 </script>
 </body>
 </html>
