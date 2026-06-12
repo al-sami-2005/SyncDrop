@@ -1621,8 +1621,8 @@ const CHUNK_SIZE = 16 * 1024;
 
 // bufferedAmountLowThreshold: drain below 2MB before sending more
 // This prevents DataChannel queue overflow on slow networks
-const BUFFER_LOW  = 512 * 1024;   // Resume threshold: 512KB
-const BUFFER_HIGH = 1 * 1024 * 1024; // Pause threshold: 4MB
+const BUFFER_LOW  = 32 * 1024;    // Resume threshold: 32KB (Safe for mobile Safari)
+const BUFFER_HIGH = 64 * 1024;    // Pause threshold: 64KB (Prevents mobile DOMException crashes)
 
 // ── GOD MODE ICE CONFIG GENERATOR ───────────────────────────────────
 async function getPeerConfig() {
