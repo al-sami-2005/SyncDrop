@@ -348,6 +348,13 @@ body::before {
   .ring-track, .ring-fill { r: 80; cx: 90; cy: 90; --circ: 502; } 
   .orbit-ring { width: 100%; height: 100%; }
 }
+
+body.modal-open {
+  overflow: hidden !important;
+  height: 100dvh !important;
+  touch-action: none !important;
+}
+
 </style>
 <style>
 :root {
@@ -643,6 +650,8 @@ body {
 
 /* Modals */
 .modal-overlay {
+  height: 100dvh;
+  overscroll-behavior: none;
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
   z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -664,7 +673,10 @@ body {
 #chat-modal-overlay.chat-side-panel .modal-box {
   width: 100%;
   max-width: 100%;
-  height: 85vh; /* Mobile height */
+  height: 85dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   border-radius: 24px 24px 0 0;
   transform: translateY(100%);
   margin: 0;
@@ -1058,7 +1070,7 @@ body {
       <h3 id="chat-modal-title">Messages</h3>
       <span class="material-icons-round" id="close-chat-modal">close</span>
     </div>
-    <div id="chat-messages" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+    <div id="chat-messages" style="flex: 1; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
       <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 10px;">End-to-End Encrypted Messages</div>
     </div>
     <div style="display: flex; gap: 8px; margin-bottom: 12px;">
@@ -3320,5 +3332,23 @@ setTimeout(() => {
         });
     }
 </script>
+
+<script>
+  // Industry standard fix: Watch for any modal becoming active and lock the body
+  document.addEventListener('DOMContentLoaded', () => {
+    const observer = new MutationObserver(() => {
+      const isAnyModalActive = document.querySelector('.modal-overlay.active') !== null;
+      if (isAnyModalActive) {
+        document.body.classList.add('modal-open');
+      } else {
+        document.body.classList.remove('modal-open');
+      }
+    });
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+      observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
+    });
+  });
+</script>
 </body>
+
 </html>
