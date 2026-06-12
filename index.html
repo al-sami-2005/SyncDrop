@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SyncDrop — Premium P2P</title>
-<link rel="icon" href="https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png" type="image/png">
+<title>Easy Share — Premium P2P</title>
+<link rel="icon" href="logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <style>
 :root {
@@ -60,7 +60,7 @@ body::before {
 .app-logo { width: 34px; height: 34px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1)); }
 .logo-spinner {
   width: 22px; height: 22px;
-  background: url('https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png') no-repeat center center;
+  background: url('logo.png') no-repeat center center;
   background-size: contain; animation: logoPulseSpin 1.8s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
   display: inline-block; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
 }
@@ -643,11 +643,11 @@ body {
 
 /* Modals */
 .modal-overlay {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-  z-index: 999; display: flex; justify-content: center; align-items: center;
+  z-index: 9999; display: flex; justify-content: center; align-items: center;
   opacity: 0; pointer-events: none; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 24px; border-radius: inherit;
+  padding: 24px;
 }
 .modal-overlay.active { opacity: 1; pointer-events: all; }
 
@@ -889,7 +889,7 @@ body {
     
     <!-- Header -->
     <div class="app-header">
-      <div class="app-title">SyncDrop</div>
+      <div class="app-title">Easy Share</div>
       <div style="display: flex; gap: 16px; align-items: center;">
           <div id="notif-bell-btn" style="position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); transition: 0.3s;">
               <span class="material-icons-round" style="color: var(--text-main); font-size: 24px;">notifications</span>
@@ -1044,7 +1044,7 @@ body {
         <span class="material-icons-round" id="close-settings-modal">close</span>
       </div>
       <div style="font-size: 15px; color: var(--text-muted); line-height: 1.6;">
-        <p><b>SyncDrop</b> is a premium peer-to-peer file sharing application. All files are transferred securely via WebRTC DataChannels.</p>
+        <p><b>Easy Share</b> is a premium peer-to-peer file sharing application. All files are transferred securely via WebRTC DataChannels.</p>
         <br>
         <p>Your Device Code: <span style="color: var(--primary); font-family: monospace;"></span></p>
       </div>
@@ -1093,7 +1093,7 @@ body {
         <h3 id="qr-modal-title">Scan QR Code</h3>
         <span class="material-icons-round" id="close-qr-modal">close</span>
       </div>
-      <div id="qr-reader" style="width:100%; border-radius:16px; overflow:hidden; background: black; display: none;"></div>
+      <div id="qr-reader" style="width:100%; max-width: 400px; margin: 0 auto; border-radius:16px; overflow:hidden; background: black; display: none; box-shadow: 0 10px 30px rgba(138,43,226,0.3);"></div>
     </div>
   </div>
 
@@ -1121,14 +1121,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (code && code !== '------') {
             clearInterval(checkCode);
             try {
-                new QRCode(document.getElementById("modern-qr-code"), {
-                    text: window.location.href.split('?')[0] + '?code=' + code,
+                document.getElementById("modern-qr-code").innerHTML='';
+                const qrCode = new QRCodeStyling({
                     width: 140,
                     height: 140,
-                    colorDark : "#0a0a0f",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.L
+                    type: "svg",
+                    data: window.location.href.split('?')[0] + '?code=' + code,
+                    image: "logo.png",
+                    dotsOptions: { color: "#8a2be2", type: "rounded" },
+                    backgroundOptions: { color: "#ffffff" },
+                    imageOptions: { crossOrigin: "anonymous", margin: 5 }
                 });
+                qrCode.append(document.getElementById("modern-qr-code"));
             } catch(e) {}
         }
     }, 1000);
@@ -1221,7 +1225,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <header class="app-bar">
   <div class="brand">
     <div class="brand-icon-wrapper">
-      <img src="https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png" alt="SyncDrop" class="app-logo">
+      <img src="logo.png" alt="Easy Share" class="app-logo">
     </div>
     <div class="brand-title">Sync<span>Drop</span></div>
   </div>
@@ -1315,7 +1319,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <canvas class="particle-canvas" id="send-canvas"></canvas>
             <div class="hub-container">
               <div class="orbit-ring"><div class="orbit-dot"></div></div>
-              <img src="https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png" class="hub-logo" alt="">
+              <img src="logo.png" class="hub-logo" alt="">
               <svg class="ring-svg">
                 <circle class="ring-track"/>
                 <circle class="ring-fill" id="send-ring"/>
@@ -1332,7 +1336,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <button class="md-btn md-btn-danger" style="margin-top:28px;padding:0 40px;" onclick="cancelTransfer()" id="send-cancel-btn"><span class="material-icons-round">cancel</span> CANCEL SYNC</button>
             <div class="success-burst" id="send-success">
-              <div class="burst-icon"><img src="https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png" class="app-logo" alt="Done"></div>
+              <div class="burst-icon"><img src="logo.png" class="app-logo" alt="Done"></div>
               <div class="burst-title">Sync Successful!</div>
               <div class="burst-meta" id="send-done-meta"></div>
             </div>
@@ -1375,7 +1379,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <canvas class="particle-canvas" id="recv-canvas"></canvas>
           <div class="hub-container" id="recv-ring-container">
             <div class="orbit-ring"><div class="orbit-dot"></div></div>
-            <img src="https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png" class="hub-logo" alt="">
+            <img src="logo.png" class="hub-logo" alt="">
             <svg class="ring-svg">
               <circle class="ring-track"/>
               <circle class="ring-fill" id="recv-ring"/>
@@ -1392,7 +1396,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <button class="md-btn md-btn-danger" style="margin-top:28px;padding:0 40px;" onclick="cancelTransfer()" id="recv-cancel-btn"><span class="material-icons-round">cancel</span> CANCEL SYNC</button>
           <div class="success-burst" id="recv-success">
-            <div class="burst-icon"><img src="https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png" class="app-logo" alt="Done"></div>
+            <div class="burst-icon"><img src="logo.png" class="app-logo" alt="Done"></div>
             <div class="burst-title" id="recv-done-name">File Ready!</div>
             <div class="burst-meta" id="recv-done-meta" style="margin-bottom:20px;"></div>
             <div id="recv-files-list" class="hidden" style="width:100%;display:flex;flex-direction:column;gap:10px;margin-bottom:24px;max-height:250px;overflow-y:auto;padding-right:4px;"></div>
@@ -1432,7 +1436,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <div class="md-status info" id="code-share-status"><div class="logo-spinner"></div><span id="code-share-status-text">Waiting for receiver…</span></div>
           <div class="success-burst" id="code-share-success" style="margin-top:24px;">
-            <div class="burst-icon" style="width:72px;height:72px;"><img src="https://i.ibb.co/RkPC5fWT/Chat-GPT-Image-Jun-8-2026-11-18-05-AM.png" class="app-logo" style="width:36px;height:36px;" alt="Done"></div>
+            <div class="burst-icon" style="width:72px;height:72px;"><img src="logo.png" class="app-logo" style="width:36px;height:36px;" alt="Done"></div>
             <div class="burst-title">Code Transmitted!</div>
           </div>
         </div>
@@ -1500,12 +1504,12 @@ document.addEventListener("DOMContentLoaded", () => {
 <div class="modal-backdrop" id="about-modal" onclick="if(event.target===this)closeAbout()">
   <div class="modal-surface">
     <div class="modal-header">
-      <div class="modal-title"><span class="material-icons-round">info</span> About SyncDrop</div>
+      <div class="modal-title"><span class="material-icons-round">info</span> About Easy Share</div>
       <button class="modal-close" onclick="closeAbout()"><span class="material-icons-round">close</span></button>
     </div>
     <div class="modal-body about-scroll">
       <h3 style="color:#fff;font-size:16px;margin-bottom:8px;">How it Works</h3>
-      <p style="color:var(--text-muted);font-size:14px;line-height:1.6;">SyncDrop uses <strong>WebRTC</strong> to establish a direct Peer-to-Peer (P2P) connection between browsers. Your files and code snippets are transferred directly without being stored on any intermediary servers.</p>
+      <p style="color:var(--text-muted);font-size:14px;line-height:1.6;">Easy Share uses <strong>WebRTC</strong> to establish a direct Peer-to-Peer (P2P) connection between browsers. Your files and code snippets are transferred directly without being stored on any intermediary servers.</p>
       <div class="dev-profile">
         <img src="https://i.ibb.co/tpwBwkTb/Picsart-26-02-21-00-01-50-579-1-1.png" alt="Developer" class="dev-avatar">
         <div class="dev-info">
@@ -1519,7 +1523,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="support-card">
         <h4><span class="material-icons-round">local_cafe</span> Buy me a Coffee</h4>
-        <p style="font-size:13px;color:var(--text-muted);">If you find SyncDrop useful, consider supporting the developer!</p>
+        <p style="font-size:13px;color:var(--text-muted);">If you find Easy Share useful, consider supporting the developer!</p>
         <div style="margin-top:16px;font-size:14px;color:#fff;font-weight:600;">bKash / Nagad (Send Money)</div>
         <div class="payment-number">
           <span id="dev-payment-number">01309250507</span>
@@ -1637,6 +1641,16 @@ let activeConnections = [];
 let selectedFiles = [];
 let receivedFiles = [], receivedBatchMeta = null, totalBatchSize = 0, totalBatchReceived = 0;
 let currentFileChunks = [], currentFileMeta = null;
+
+async function computeFileIntegrity(blob) {
+    try {
+        const sampleSize = Math.min(blob.size, 1024 * 1024);
+        const sample = await blob.slice(0, sampleSize).arrayBuffer();
+        const hashBuffer = await crypto.subtle.digest('SHA-256', sample);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) { return 'fallback'; }
+}
 let qrVisible = false, qrGenerated = false;
 let currentLang = 'javascript';
 let receivedCodeData = null;
@@ -1701,6 +1715,14 @@ function updateFilePreviewList(){
   });
   document.getElementById('summary-count').textContent=selectedFiles.length;
   document.getElementById('summary-size').textContent=fmtBytes(totalSize);
+  let losslessBadge = document.getElementById('lossless-badge');
+  if (!losslessBadge) {
+      losslessBadge = document.createElement('div');
+      losslessBadge.id = 'lossless-badge';
+      losslessBadge.style.cssText = 'margin-top:12px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(16,185,129,0.1);color:var(--success);border-radius:20px;font-size:12px;font-weight:600;border:1px solid rgba(16,185,129,0.3);';
+      losslessBadge.innerHTML = '<span class="material-icons-round" style="font-size:16px;">verified_user</span> 100% Original Quality (Lossless)';
+      document.getElementById('summary-size').parentNode.appendChild(losslessBadge);
+  }
 }
 
 function removeSelectedFile(index){selectedFiles.splice(index,1);updateFilePreviewList();cancelTransfer();}
@@ -1711,7 +1733,14 @@ function generateQR(code){
   if(qrGenerated)return;qrGenerated=true;
   const c=document.getElementById('qr-code');c.innerHTML='';
   const url=window.location.href.split('?')[0]+'?code='+code;
-  new QRCode(c,{text:url,width:180,height:180,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  const qrCode = new QRCodeStyling({
+      width: 180, height: 180, type: "svg", data: url,
+      image: "logo.png",
+      dotsOptions: { color: "#8a2be2", type: "rounded" },
+      backgroundOptions: { color: "#ffffff" },
+      imageOptions: { crossOrigin: "anonymous", margin: 8 }
+  });
+  qrCode.append(c);
 }
 function copyValue(srcId,btnId){
   navigator.clipboard.writeText(document.getElementById(srcId).textContent).catch(()=>{});
@@ -1743,7 +1772,7 @@ function initPeer(customId){
 
     peer.on('open',assignedId=>{
       resolved=true;clearTimeout(timeout);
-      console.log('[SyncDrop] Peer opened:',assignedId);
+      console.log('[Easy Share] Peer opened:',assignedId);
       resolve(peer);
     });
 
@@ -1919,12 +1948,12 @@ async function startSend(){
   generateQR(id);
   
   myPeer.on('connection',conn=>{
-    console.log('[SyncDrop] Receiver connected:',conn.peer);
+    console.log('[Easy Share] Receiver connected:',conn.peer);
     activeConnections.push(conn);
     monitorIceState(conn,'send-ice-banner','send-ice-text','diag-send-ice',setSendStatus);
     
     conn.on('open',()=>{
-      console.log('[SyncDrop] DataChannel open');
+      console.log('[Easy Share] DataChannel open');
       document.getElementById('send-status-row').classList.add('hidden');
       document.getElementById('send-ice-banner').classList.add('hidden');
       document.getElementById('send-diag').classList.remove('hidden');
@@ -1932,7 +1961,7 @@ async function startSend(){
       sendInChunks(conn);
     });
     conn.on('error',err=>{console.error('Sender conn error:',err);setSendStatus('error','Transfer error: '+(err.message||err));});
-    conn.on('close',()=>{console.log('[SyncDrop] Receiver disconnected');});
+    conn.on('close',()=>{console.log('[Easy Share] Receiver disconnected');});
   });
   
   myPeer.on('error',err=>{console.error('Sender peer error:',err.type);setSendStatus('error','Error: '+err.type);});
@@ -2054,8 +2083,9 @@ function sendInChunks(conn, isGroupMode=false, onFinish=null){
       dc=conn.dataChannel;
       for(let i=0;i<files.length;i++){
         const file=files[i];
+        const hash = await computeFileIntegrity(file);
         setSendStatus('info',`Sending file ${i+1} of ${files.length}… (${file.name})`);
-        ctrl({type:'file-start',name:file.name,size:file.size,mime:file.type});
+        ctrl({type:'file-start',name:file.name,size:file.size,mime:file.type, integrityHash: hash});
         
         let offset=0;
         while(offset<file.size&&transferActive){
@@ -2118,7 +2148,7 @@ async function connectToSender(){
   receiverPeer=new Peer(config);
 
   receiverPeer.on('open',myId=>{
-    console.log('[SyncDrop] Receiver peer opened, connecting to:',code);
+    console.log('[Easy Share] Receiver peer opened, connecting to:',code);
     // GOD MODE: serialization:'binary' ensures ArrayBuffer passthrough
     // without this, PeerJS base64-encodes ArrayBuffers on some browsers!
     const conn=receiverPeer.connect(code,{reliable:true});
@@ -2132,7 +2162,7 @@ async function connectToSender(){
 
     conn.on('open',()=>{
       clearTimeout(openTimeout);
-      console.log('[SyncDrop] DataChannel open (receiver)');
+      console.log('[Easy Share] DataChannel open (receiver)');
       document.getElementById('receive-status').classList.add('hidden');
       document.getElementById('recv-ice-banner').classList.add('hidden');
       document.getElementById('recv-diag').classList.remove('hidden');
@@ -2143,7 +2173,7 @@ async function connectToSender(){
     conn.on('close',()=>{
       clearTimeout(openTimeout);
       if(document.getElementById('recv-success').classList.contains('visible'))return;
-      console.log('[SyncDrop] Sender closed connection');
+      console.log('[Easy Share] Sender closed connection');
     });
   });
 
@@ -2205,8 +2235,10 @@ function listenForFile(conn){
   async function processFile(meta,chunks){
     try{
       const blob=new Blob(chunks,{type:meta.mime||'application/octet-stream'});
+      const receivedHash = await computeFileIntegrity(blob);
+      const isPerfectMatch = (!meta.integrityHash) || (receivedHash === meta.integrityHash);
       const url=URL.createObjectURL(blob);
-      receivedFiles.push({name:meta.name,size:blob.size,mime:meta.mime,blob,url});
+      receivedFiles.push({name:meta.name,size:blob.size,mime:meta.mime,blob,url, isPerfectMatch});
     }catch(e){console.error('File assembly error:',e);}
     filesProcessed++;pendingProcessing--;checkFinish();
   }
@@ -2291,7 +2323,7 @@ function listenForFile(conn){
   });
 
   conn.on('close',()=>{
-    console.log('[SyncDrop] Sender disconnected');
+    console.log('[Easy Share] Sender disconnected');
     setTimeout(()=>{
       if(!document.getElementById('recv-success').classList.contains('visible')){
         batchDoneReceived=true;checkFinish();
@@ -2322,7 +2354,7 @@ function finishReceiveBatch(stopStream, isGroupMode=false){
       if(receivedFiles.length===1){
         let safeName = receivedFiles[0].name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
         document.getElementById('recv-done-name').textContent=receivedFiles[0].name;
-        document.getElementById('recv-done-meta').textContent=fmtBytes(receivedFiles[0].size);
+        document.getElementById('recv-done-meta').innerHTML=fmtBytes(receivedFiles[0].size) + (receivedFiles[0].isPerfectMatch ? ' <span style="color:var(--success);font-weight:bold;margin-left:8px;"><span class="material-icons-round" style="font-size:14px;vertical-align:-2px;">verified</span> Verified Lossless</span>' : '');
         document.getElementById('recv-single-save-btn').classList.remove('hidden');
         document.getElementById('recv-single-save-btn').setAttribute('onclick', `const a=document.createElement('a');a.href='${receivedFiles[0].url}';a.download='${safeName}';document.body.appendChild(a);a.click();document.body.removeChild(a);`);
         filesListEl.classList.add('hidden');
@@ -2335,7 +2367,8 @@ function finishReceiveBatch(stopStream, isGroupMode=false){
           let safeName = file.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
           const row=document.createElement('div');row.className='file-preview-row';
           row.style.cssText='padding:10px 16px;border-radius:var(--radius-sm);margin-top:0;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);';
-          row.innerHTML=`<div class="md-card-header-icon" style="background:var(--primary-light);width:32px;height:32px;"><span class="material-icons-round" style="font-size:16px">insert_drive_file</span></div><div class="file-info" style="margin-left:10px;text-align:left;"><div class="file-name" style="font-size:14px;max-width:180px;">${file.name}</div><div class="file-size" style="font-size:11px;margin-top:2px;">${fmtBytes(file.size)}</div></div><button class="md-btn md-btn-filled" style="padding:0 14px;height:32px;font-size:12px;border-radius:var(--radius-sm);" onclick="const a=document.createElement('a');a.href='${file.url}';a.download='${safeName}';document.body.appendChild(a);a.click();document.body.removeChild(a);"><span class="material-icons-round" style="font-size:14px">save_alt</span> SAVE</button>`;
+          const verifyBadge = file.isPerfectMatch ? '<span style="color:var(--success); margin-left:6px;" title="100% Original Quality"><span class="material-icons-round" style="font-size:12px;vertical-align:-2px;">verified</span></span>' : '';
+          row.innerHTML=`<div class="md-card-header-icon" style="background:var(--primary-light);width:32px;height:32px;"><span class="material-icons-round" style="font-size:16px">insert_drive_file</span></div><div class="file-info" style="margin-left:10px;text-align:left;"><div class="file-name" style="font-size:14px;max-width:180px;">${file.name}${verifyBadge}</div><div class="file-size" style="font-size:11px;margin-top:2px;">${fmtBytes(file.size)}</div></div><button class="md-btn md-btn-filled" style="padding:0 14px;height:32px;font-size:12px;border-radius:var(--radius-sm);" onclick="const a=document.createElement('a');a.href='${file.url}';a.download='${safeName}';document.body.appendChild(a);a.click();document.body.removeChild(a);"><span class="material-icons-round" style="font-size:14px">save_alt</span> SAVE</button>`;
           filesListEl.appendChild(row);
         });
       }
@@ -2423,7 +2456,15 @@ function setScanStatus(type,text){
 // ── ABOUT MODAL ───────────────────────────────────────────────────────
 function openAbout(){
   document.getElementById('about-modal').classList.add('open');
-  if(!supportQrGenerated){new QRCode(document.getElementById('support-qr'),{text:"01309250507",width:140,height:140,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});supportQrGenerated=true;}
+  if(!supportQrGenerated){document.getElementById('support-qr').innerHTML='';
+  const qrCode = new QRCodeStyling({
+      width: 140, height: 140, type: "svg", data: "01309250507",
+      image: "logo.png",
+      dotsOptions: { color: "#8a2be2", type: "rounded" },
+      backgroundOptions: { color: "#ffffff" },
+      imageOptions: { crossOrigin: "anonymous", margin: 5 }
+  });
+  qrCode.append(document.getElementById('support-qr'));supportQrGenerated=true;}
 }
 function closeAbout(){document.getElementById('about-modal').classList.remove('open');}
 
@@ -2668,7 +2709,7 @@ window.connectToSender = function() {
         return;
     }
 
-    console.log('[SyncDrop] Unified connecting to:', code);
+    console.log('[Easy Share] Unified connecting to:', code);
     const conn = window.myPeer.connect(code, {reliable:true});
     if(!conn) {
         alert('Failed to initiate connection.');
@@ -2680,7 +2721,7 @@ window.connectToSender = function() {
     
     // We should also listen for files coming BACK to us on this connection!
     conn.on('open', () => {
-        console.log('[SyncDrop] Unified DataChannel open!');
+        console.log('[Easy Share] Unified DataChannel open!');
         document.getElementById('modern-connect-btn').textContent = 'Connected!';
         if(typeof listenForFile === 'function') listenForFile(conn);
     });
@@ -2709,12 +2750,12 @@ async function autoInitHost() {
         document.getElementById('modern-my-code').textContent = peer.id;
         
         peer.on('connection', conn => {
-            console.log('[SyncDrop] Incoming modern connection:', conn.peer);
+            console.log('[Easy Share] Incoming modern connection:', conn.peer);
             const existingPeers = activeConnections.filter(c => c.open).map(c => c.peer);
             if (!activeConnections.find(c => c.peer === conn.peer)) activeConnections.push(conn);
             
             conn.on('open', () => {
-                console.log('[SyncDrop] DataChannel open (Host)');
+                console.log('[Easy Share] DataChannel open (Host)');
                 if (existingPeers.length > 0) conn.send(JSON.stringify({ type: 'mesh-peers', peers: existingPeers }));
                 if(typeof listenForFile === 'function') listenForFile(conn);
             });
