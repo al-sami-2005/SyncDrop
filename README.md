@@ -1,4 +1,4 @@
-# SyncDrop - Secure P2P File & Code Sharing
+# Easy Share - Premium Secure P2P File & Code Sharing
 
 SyncDrop is an ultra-fast, highly secure, decentralized peer-to-peer (P2P) file and code sharing application. It enables frictionless transfers between devices (like laptops and phones) directly over the local network or internet using WebRTC, without relying on cloud storage or intermediate servers.
 
