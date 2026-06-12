@@ -429,6 +429,8 @@ body {
 }
 @media (min-width: 768px) {
   .app-container {
+    max-width: 1000px;
+    margin: 40px auto;
     min-height: auto;
     border: 1px solid var(--card-border);
     border-radius: 32px;
@@ -442,6 +444,51 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .app-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto 1fr;
+    column-gap: 48px;
+    row-gap: 24px;
+    align-items: start;
+    padding: 48px;
+  }
+  .app-header {
+    grid-column: 1 / -1;
+    margin-bottom: 16px;
+  }
+  .conn-card {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .quick-grid {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .storage-card {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .drop-zone-box {
+    grid-column: 2;
+    grid-row: 3;
+    margin-top: 0 !important;
+  }
+  .recent-header {
+    grid-column: 2;
+    grid-row: 4;
+    margin-bottom: -12px;
+  }
+  .recent-list {
+    grid-column: 2;
+    grid-row: 5;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+  }
 }
 
 .app-header {
@@ -603,6 +650,152 @@ body {
   padding: 24px; border-radius: inherit;
 }
 .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+/* Side Panel Chat */
+#chat-modal-overlay.chat-side-panel {
+  position: fixed;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: none;
+  justify-content: flex-end; /* Align right on desktop */
+  align-items: flex-end;     /* Align bottom on mobile */
+  padding: 0;
+  border-radius: 0;
+}
+#chat-modal-overlay.chat-side-panel .modal-box {
+  width: 100%;
+  max-width: 100%;
+  height: 85vh; /* Mobile height */
+  border-radius: 24px 24px 0 0;
+  transform: translateY(100%);
+  margin: 0;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+#chat-modal-overlay.chat-side-panel.active .modal-box {
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  #chat-modal-overlay.chat-side-panel {
+    align-items: center; /* Center vertically on desktop */
+  }
+  #chat-modal-overlay.chat-side-panel .modal-box {
+    max-width: 400px;
+    height: 100vh !important;
+    border-radius: 24px 0 0 24px;
+    transform: translateX(100%);
+    border-top: none;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+  }
+  #chat-modal-overlay.chat-side-panel.active .modal-box {
+    transform: translateX(0);
+  }
+}
+
+/* Dynamic Chat Bubbles */
+.chat-bubble {
+  padding: 12px 16px;
+  border-radius: 18px;
+  max-width: 85%;
+  font-size: 15px;
+  line-height: 1.4;
+  position: relative;
+  word-break: break-word;
+  animation: bubblePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes bubblePop {
+  0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.chat-bubble.mine {
+  background: linear-gradient(135deg, #8B5CF6, #6366F1);
+  color: white;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+  box-shadow: 0 4px 15px rgba(139,92,246,0.3);
+}
+.chat-bubble.theirs {
+  background: rgba(255,255,255,0.1);
+  color: #E2E8F0;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.chat-meta {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 4px;
+  margin-bottom: 8px;
+  align-self: flex-end;
+}
+.chat-bubble.theirs + .chat-meta {
+  align-self: flex-start;
+}
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+  pointer-events: none;
+}
+.toast {
+  background: rgba(15, 15, 25, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-left: 4px solid var(--primary);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 280px;
+  max-width: 350px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.toast:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+  border-left-color: var(--secondary);
+}
+.toast-icon {
+  background: rgba(255,255,255,0.1);
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; justify-content: center; align-items: center;
+  color: var(--primary);
+}
+.toast-content {
+  flex: 1;
+}
+.toast-title {
+  font-weight: 600; font-size: 14px; margin-bottom: 4px;
+}
+.toast-desc {
+  font-size: 13px; color: var(--text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+@keyframes slideInRight {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(120%); opacity: 0; }
+}
+.toast.hiding {
+  animation: fadeOutRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
 .modal-box {
   background: #15151E; border: 1px solid rgba(255,255,255,0.1);
   width: 100%; max-width: 440px; border-radius: 28px; padding: 32px;
@@ -624,9 +817,70 @@ body {
   padding: 20px; resize: none; outline: none; font-size: 15px; line-height: 1.5;
 }
 #modern-code-textarea:focus { border-color: var(--primary); }
+.notif-dropdown {
+  position: absolute;
+  top: 60px; /* Below the header */
+  right: 16px;
+  width: 340px;
+  max-height: 400px;
+  background: #1A1A24;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+  overflow: hidden;
+}
+.notif-dropdown.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+@media (max-width: 768px) {
+  .notif-dropdown {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    right: 20px;
+    width: auto;
+  }
+}
+#global-drag-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(16, 185, 129, 0.1); backdrop-filter: blur(8px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 4px dashed var(--primary);
+}
+#global-drag-overlay.active { opacity: 1; pointer-events: all; }
+.drop-zone-box {
+  border: 2px dashed rgba(255,255,255,0.2);
+  border-radius: 20px;
+  background: rgba(255,255,255,0.02);
+  padding: 32px;
+  text-align: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: 0.3s;
+  margin-bottom: 24px;
+}
+.drop-zone-box:hover, .drop-zone-box.drag-over {
+  background: rgba(16, 185, 129, 0.05);
+  border-color: var(--primary);
+  color: white;
+}
 </style>
 </head>
 <body data-theme="dark">
+<div id="global-drag-overlay">
+  <span class="material-icons-round" style="font-size: 80px; color: var(--primary); margin-bottom: 16px;">file_download</span>
+  <h2 style="color: white; font-size: 28px; font-weight: bold; margin: 0;">Drop files to share</h2>
+</div>
 <div class="bg-mesh"></div>
 
 <div class="app-wrapper">
@@ -636,7 +890,31 @@ body {
     <!-- Header -->
     <div class="app-header">
       <div class="app-title">SyncDrop</div>
-      <span class="material-icons-round" id="modern-settings-btn">settings</span>
+      <div style="display: flex; gap: 16px; align-items: center;">
+          <div id="notif-bell-btn" style="position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); transition: 0.3s;">
+              <span class="material-icons-round" style="color: var(--text-main); font-size: 24px;">notifications</span>
+              <div id="notif-badge" style="display: none; position: absolute; top: -2px; right: -2px; background: var(--danger); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; text-align: center; line-height: 18px; border: 2px solid var(--card-bg);">0</div>
+          </div>
+          <div id="modern-settings-btn" style="cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); transition: 0.3s;">
+              <span class="material-icons-round" style="color: var(--text-main); font-size: 24px;">settings</span>
+          </div>
+      </div>
+      
+      <!-- Notification Dropdown -->
+      <div class="notif-dropdown" id="notif-dropdown">
+        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="margin: 0; font-size: 16px; font-weight: bold;">Notifications</h3>
+          <span id="notif-mark-read-btn" style="font-size: 12px; color: var(--primary); cursor: pointer; font-weight: 600;">Mark all read</span>
+        </div>
+        <div id="notif-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding: 8px;">
+          <!-- Notifications appended here -->
+          <div id="notif-empty-state" style="text-align: center; color: var(--text-muted); font-size: 14px; padding: 30px 0;">
+            <span class="material-icons-round" style="font-size: 32px; opacity: 0.2; margin-bottom: 8px; display: block;">notifications_off</span>
+            No new notifications
+          </div>
+        </div>
+      </div>
+      
     </div>
 
     <!-- Connection Card -->
@@ -680,6 +958,8 @@ body {
       </div>
     </div>
 
+    <!-- Dedicated Drop Zone UI moved -->
+
     <!-- Quick Actions -->
     <div class="quick-grid">
       <div class="quick-btn" id="modern-btn-photos">
@@ -696,7 +976,13 @@ body {
       </div>
       <div class="quick-btn" id="modern-btn-clip">
         <span class="material-icons-round" style="font-size:32px; color:#8B5CF6;">code</span>
-        <div class="quick-label">Text Share</div>
+        <div class="quick-label">Code</div>
+      </div>
+      <div class="quick-btn" id="modern-btn-chat" style="grid-column: span 4; background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2));">
+        <div style="display:flex; align-items:center; gap: 12px; justify-content:center; width:100%;">
+            <span class="material-icons-round" style="font-size:28px; color:#10B981;">forum</span>
+            <span class="quick-label" style="font-size:16px;">Messages</span>
+        </div>
       </div>
     </div>
 
@@ -709,6 +995,13 @@ body {
       <div class="progress-container" id="modern-progress-fill">
         <div class="progress-fill" id="modern-prog-bar"></div>
       </div>
+    </div>
+
+    <!-- Dedicated Drop Zone UI -->
+    <div class="drop-zone-box" id="ui-drop-zone" style="margin-top: 24px;">
+      <span class="material-icons-round" style="font-size: 40px; color: var(--primary); margin-bottom: 12px; display: block;">cloud_upload</span>
+      <div style="font-weight: bold; font-size: 16px; margin-bottom: 4px;">Drag & Drop files here</div>
+      <div style="font-size: 13px;">or click to browse</div>
     </div>
 
     <!-- Recent Transfers -->
@@ -758,7 +1051,30 @@ body {
     </div>
   </div>
 
-  <!-- Code Share Modal -->
+  <!-- Group Chat Modal (Now Side Panel) -->
+<div class="modal-overlay chat-side-panel" id="chat-modal-overlay">
+  <div class="modal-box" style="display: flex; flex-direction: column;">
+    <div class="modal-header">
+      <h3 id="chat-modal-title">Messages</h3>
+      <span class="material-icons-round" id="close-chat-modal">close</span>
+    </div>
+    <div id="chat-messages" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+      <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 10px;">End-to-End Encrypted Messages</div>
+    </div>
+    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+      <button id="chat-btn-photos" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;"><span class="material-icons-round" style="font-size:14px;">image</span> Photos</button>
+      <button id="chat-btn-files" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;"><span class="material-icons-round" style="font-size:14px;">insert_drive_file</span> Files</button>
+      <button id="chat-btn-folders" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;"><span class="material-icons-round" style="font-size:14px;">folder</span> Folders</button>
+      <button id="chat-btn-code" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;"><span class="material-icons-round" style="font-size:14px;">code</span> Code</button>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <input type="text" id="chat-input" placeholder="Type a message..." style="flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 16px; color: white; outline: none; font-size: 15px;">
+      <button class="btn-primary" id="chat-send-btn" style="padding: 12px; border-radius: 12px;"><span class="material-icons-round">send</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Code Share Modal -->
   <div class="modal-overlay" id="code-modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
@@ -1656,32 +1972,47 @@ function setSendStatus(type,text){
 // ║                                                                  ║
 // ║  5. ArrayBuffer.slice() with zero-copy: no data duplication     ║
 // ╚══════════════════════════════════════════════════════════════════╝
-function sendInChunks(conn){
+function sendInChunks(conn, isGroupMode=false, onFinish=null){
   const files=selectedFiles;
   const totalSize=files.reduce((a,f)=>a+f.size,0);
   let totalSent=0,lastTime=Date.now(),lastTotalSent=0;
-  const stopStream=startDataStream('send-canvas','send');
+  
+  let stopStream = () => {};
+  if (!isGroupMode) {
+      const overlay = document.getElementById('modern-transfer-overlay');
+      if (overlay) {
+          overlay.style.display = 'flex';
+          const title = document.getElementById('modern-transfer-overlay-title');
+          if(title) title.innerText = 'Sending...';
+          const meta = document.getElementById('modern-transfer-overlay-meta');
+          if(meta) meta.innerText = 'Starting...';
+          const pctText = document.getElementById('modern-transfer-overlay-pct');
+          if(pctText) pctText.innerText = '0%';
+      }
+  }
+  
   transferActive=true;
 
   let diagInterval=null;
 
   function updateUI(sent,total){
     const now=Date.now(), elapsed=(now-lastTime)/1000, pct=Math.min(100,Math.round((sent/total)*100));
-    setRing('send-ring',pct);
-    document.getElementById('send-pct').textContent=pct+'%';
-    document.getElementById('send-sent').textContent=fmtBytes(sent);
     
-    // Modern UI Hooks
+    // Modern UI Hooks (ALWAYS show)
     const modernStats = document.getElementById('modern-transfer-stats');
     if(modernStats) modernStats.textContent = `${fmtBytes(sent)} of ${fmtBytes(total)}`;
     const modernProgress = document.getElementById('modern-progress-fill');
     if(modernProgress) modernProgress.style.width = pct + '%';
     
-    if(elapsed>=0.5){
-      const speed=elapsed>0?(sent-lastTotalSent)/elapsed:0,remaining=total-sent;
-      document.getElementById('send-speed').textContent=fmtSpeed(speed);
-      document.getElementById('send-eta').textContent=fmtEta(speed>0?remaining/speed:Infinity);
-      lastTotalSent=sent;lastTime=now;
+    if(!isGroupMode) {
+        const overlayPct = document.getElementById('modern-transfer-overlay-pct');
+        if(overlayPct) overlayPct.innerText = pct + '%';
+        if(elapsed>=0.5){
+            const speed=elapsed>0?(sent-lastTotalSent)/elapsed:0;
+            const overlayMeta = document.getElementById('modern-transfer-overlay-meta');
+            if(overlayMeta) overlayMeta.innerText = fmtSpeed(speed);
+            lastTotalSent=sent;lastTime=now;
+        }
     }
   }
 
@@ -1691,7 +2022,7 @@ function sendInChunks(conn){
   // Send control message as JSON string
   function ctrl(obj){conn.send(JSON.stringify(obj));}
 
-  ctrl({type:'batch-meta',count:files.length,totalSize,files:files.map(f=>({name:f.name,size:f.size,mime:f.type}))});
+  ctrl({type:'batch-meta', isGroupMode: isGroupMode, sender: window.myPeer ? window.myPeer.id.substring(0,6) : 'Unknown',count:files.length,totalSize,files:files.map(f=>({name:f.name,size:f.size,mime:f.type}))});
 
   function waitDrain(dataChannel){
     return new Promise(resolve=>{
@@ -1749,7 +2080,8 @@ function sendInChunks(conn){
       }
       if(transferActive){
         ctrl({type:'batch-done'});
-        finishSendBatch(stopStream,totalSize);
+        finishSendBatch(stopStream,totalSize,isGroupMode);
+        if (onFinish) onFinish();
       }
     } catch(err){
       console.error('Send error:',err);
@@ -1761,30 +2093,18 @@ function sendInChunks(conn){
   sendAll();
 }
 
-function finishSendBatch(stopStream,totalSize){
-  transferActive=false;stopStream();
-  setRing('send-ring',100);
-  document.getElementById('send-pct').textContent='100%';document.getElementById('send-lbl').textContent='DONE';
-  document.getElementById('send-eta').textContent='0s';
-  setSendStatus('success',`Sent ${selectedFiles.length} files successfully.`);
-  
-  // Modern UI Recent List
-  const list = document.getElementById('modern-recent-list');
-  if(list && selectedFiles.length > 0) {
-      if(list.children[0] && list.children[0].innerText.includes('No recent')) list.innerHTML = '';
-      list.innerHTML = `<div class="recent-item">
-        <div class="recent-icon"><span class="material-icons-round">upload_file</span></div>
-        <div class="recent-info">
-          <div class="recent-name">Sent ${selectedFiles.length} File(s)</div>
-          <div class="recent-meta">Just now · ${fmtBytes(totalSize)}</div>
-        </div>
-        <div class="recent-status"><span class="material-icons-round">check_circle</span></div>
-      </div>` + list.innerHTML;
+function finishSendBatch(stopStream,totalSize,isGroupMode=false){
+  stopStream();
+  if(!isGroupMode) {
+      setRing('send-ring',100);
+      document.getElementById('send-pct').textContent='100%';document.getElementById('send-lbl').textContent='DONE';
+      document.getElementById('send-eta').textContent='0s';
+      setSendStatus('success',`Sent ${selectedFiles.length} files successfully.`);
+      document.getElementById('send-cancel-btn').classList.add('hidden');document.getElementById('send-stats').classList.add('hidden');
+      document.getElementById('send-viz').querySelector('.hub-container').classList.add('hidden');
+      document.getElementById('send-success').classList.add('visible');
+      document.getElementById('send-done-meta').textContent=selectedFiles.length+' file(s) · '+fmtBytes(totalSize);
   }
-  document.getElementById('send-cancel-btn').classList.add('hidden');document.getElementById('send-stats').classList.add('hidden');
-  document.getElementById('send-viz').querySelector('.hub-container').classList.add('hidden');
-  document.getElementById('send-success').classList.add('visible');
-  document.getElementById('send-done-meta').textContent=selectedFiles.length+' file(s) · '+fmtBytes(totalSize);
 }
 
 // ── GOD MODE: RECEIVE FILE FLOW ───────────────────────────────────────
@@ -1856,26 +2176,29 @@ function listenForFile(conn){
   receivedBatchMeta=null;currentFileMeta=null;totalBatchSize=1;
   let lastTime=Date.now(),lastRcv=0,chunkCount=0;
   let filesProcessed=0,batchDoneReceived=false,pendingProcessing=0;
-  const stopStream=startDataStream('recv-canvas','recv');
+  
+  let stopStream = () => {};
+  let isGroupMode = false;
 
   let lastPctTime=0, lastPctVal=-1;
   function updateUI(received,total){
     const now=Date.now(), elapsed=(now-lastTime)/1000, pct=Math.min(100,Math.round((received/total)*100));
-    if(now - lastPctTime > 40 || pct === 100){
-      if(pct !== lastPctVal){
-        setRing('recv-ring',pct);
-        getCachedEl('recv-pct').textContent=pct+'%';
-        lastPctVal = pct;
-      }
-      getCachedEl('recv-got').textContent=fmtBytes(received);
-      const diagEl=getCachedEl('diag-recv-chunks');if(diagEl)diagEl.textContent=chunkCount;
-      lastPctTime = now;
-    }
-    if(elapsed>=0.5){
-      const speed=elapsed>0?(received-lastRcv)/elapsed:0,remaining=total-received;
-      getCachedEl('recv-speed').textContent=fmtSpeed(speed);
-      getCachedEl('recv-eta').textContent=fmtEta(speed>0?remaining/speed:Infinity);
-      lastRcv=received;lastTime=now;
+    
+    if(!isGroupMode) {
+        if(now - lastPctTime > 40 || pct === 100){
+            if(pct !== lastPctVal){
+                const overlayPct = document.getElementById('modern-transfer-overlay-pct');
+                if(overlayPct) overlayPct.innerText = pct + '%';
+                lastPctVal = pct;
+            }
+            lastPctTime = now;
+        }
+        if(elapsed>=0.5){
+            const speed=elapsed>0?(received-lastRcv)/elapsed:0;
+            const overlayMeta = document.getElementById('modern-transfer-overlay-meta');
+            if(overlayMeta) overlayMeta.innerText = fmtSpeed(speed);
+            lastRcv=received;lastTime=now;
+        }
     }
   }
 
@@ -1890,14 +2213,24 @@ function listenForFile(conn){
 
   function checkFinish(){
     const expected=receivedBatchMeta?receivedBatchMeta.count:1;
-    if(batchDoneReceived&&pendingProcessing===0&&filesProcessed>=expected)finishReceiveBatch(stopStream);
+    if(batchDoneReceived&&pendingProcessing===0&&filesProcessed>=expected)finishReceiveBatch(stopStream,isGroupMode);
   }
 
   conn.on('data',msg=>{
     if(!msg)return;
     if(typeof msg==='string'){
       let obj;try{obj=JSON.parse(msg);}catch(e){return;}
-      if(obj.type==='code-share'){ window.dispatchEvent(new CustomEvent('code-share-received', {detail: obj.content})); }
+      if(obj.type==='code-share'){ window.dispatchEvent(new CustomEvent('code-share-received', {detail: {content: obj.content, sender: obj.sender}})); }
+      else if(obj.type==='chat-msg'){ window.dispatchEvent(new CustomEvent('chat-msg-received', {detail: obj})); }
+      else if(obj.type==='mesh-peers'){
+          obj.peers.forEach(peerId => {
+              if (window.myPeer && peerId !== window.myPeer.id && !activeConnections.find(c => c.peer === peerId)) {
+                  const newConn = window.myPeer.connect(peerId, {reliable:true});
+                  activeConnections.push(newConn);
+                  newConn.on('open', () => { if(typeof listenForFile === 'function') listenForFile(newConn); });
+              }
+          });
+      }
       else if(obj.type==='cancel-transfer'){
         // Abort transfer but keep connection
         currentFileChunks = [];
@@ -1913,6 +2246,23 @@ function listenForFile(conn){
       }
       else if(obj.type==='batch-meta'){ 
         receivedBatchMeta=obj;totalBatchSize=obj.totalSize||1;
+        receivedFiles=[];
+        filesProcessed=0;
+        batchDoneReceived=false;
+        totalBatchReceived=0;
+        isGroupMode = obj.isGroupMode === true || (typeof activeConnections !== 'undefined' && activeConnections.length > 1);
+        if (!isGroupMode) {
+            const overlay = document.getElementById('modern-transfer-overlay');
+            if (overlay) {
+                overlay.style.display = 'flex';
+                const title = document.getElementById('modern-transfer-overlay-title');
+                if(title) title.innerText = 'Receiving...';
+                const meta = document.getElementById('modern-transfer-overlay-meta');
+                if(meta) meta.innerText = 'Starting...';
+                const pctText = document.getElementById('modern-transfer-overlay-pct');
+                if(pctText) pctText.innerText = '0%';
+            }
+        }
       } else if(obj.type==='file-start'){
         currentFileMeta=obj;currentFileChunks=[];
       } else if(obj.type==='file-end'){
@@ -1956,41 +2306,50 @@ function listenForFile(conn){
   });
 }
 
-function finishReceiveBatch(stopStream){
+function finishReceiveBatch(stopStream, isGroupMode=false){
   stopStream();
-  setRing('recv-ring',100);
-  document.getElementById('recv-pct').textContent='100%';document.getElementById('recv-lbl').textContent='DONE';
-  document.getElementById('recv-eta').textContent='0s';
-  document.getElementById('recv-cancel-btn').classList.add('hidden');document.getElementById('recv-stats').classList.add('hidden');
-  document.getElementById('recv-ring-container').classList.add('hidden');
-  const filesListEl=document.getElementById('recv-files-list');filesListEl.innerHTML='';
-  if(receivedFiles.length===0){setRecvStatus('error','No files received. Please retry.');return;}
-  if(receivedFiles.length===1){
-    document.getElementById('recv-done-name').textContent=receivedFiles[0].name;
-    document.getElementById('recv-done-meta').textContent=fmtBytes(receivedFiles[0].size);
-    document.getElementById('recv-single-save-btn').classList.remove('hidden');
-    filesListEl.classList.add('hidden');
-  } else {
-    document.getElementById('recv-done-name').textContent='Sync Complete!';
-    document.getElementById('recv-done-meta').textContent=receivedFiles.length+' files · '+fmtBytes(totalBatchSize);
-    document.getElementById('recv-single-save-btn').classList.add('hidden');
-    filesListEl.classList.remove('hidden');
-    receivedFiles.forEach((file,index)=>{
-      const row=document.createElement('div');row.className='file-preview-row';
-      row.style.cssText='padding:10px 16px;border-radius:var(--radius-sm);margin-top:0;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);';
-      row.innerHTML=`<div class="md-card-header-icon" style="background:var(--primary-light);width:32px;height:32px;"><span class="material-icons-round" style="font-size:16px">insert_drive_file</span></div><div class="file-info" style="margin-left:10px;text-align:left;"><div class="file-name" style="font-size:14px;max-width:180px;">${file.name}</div><div class="file-size" style="font-size:11px;margin-top:2px;">${fmtBytes(file.size)}</div></div><button class="md-btn md-btn-filled" style="padding:0 14px;height:32px;font-size:12px;border-radius:var(--radius-sm);" onclick="downloadBatchFile(${index})"><span class="material-icons-round" style="font-size:14px">save_alt</span> SAVE</button>`;
-      filesListEl.appendChild(row);
-    });
+  const filesListEl=document.getElementById('recv-files-list');
+  
+  const overlay = document.getElementById('modern-transfer-overlay');
+  if(overlay) overlay.style.display = 'none';
+  
+  if(receivedFiles.length===0){
+      if(!isGroupMode) alert('No files received. Please retry.');
+      return;
   }
-  document.getElementById('recv-success').classList.add('visible');
+  
+  if(!isGroupMode) {
+      if(receivedFiles.length===1){
+        let safeName = receivedFiles[0].name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+        document.getElementById('recv-done-name').textContent=receivedFiles[0].name;
+        document.getElementById('recv-done-meta').textContent=fmtBytes(receivedFiles[0].size);
+        document.getElementById('recv-single-save-btn').classList.remove('hidden');
+        document.getElementById('recv-single-save-btn').setAttribute('onclick', `const a=document.createElement('a');a.href='${receivedFiles[0].url}';a.download='${safeName}';document.body.appendChild(a);a.click();document.body.removeChild(a);`);
+        filesListEl.classList.add('hidden');
+      } else {
+        document.getElementById('recv-done-name').textContent='Sync Complete!';
+        document.getElementById('recv-done-meta').textContent=receivedFiles.length+' files · '+fmtBytes(totalBatchSize);
+        document.getElementById('recv-single-save-btn').classList.add('hidden');
+        filesListEl.classList.remove('hidden');
+        receivedFiles.forEach((file)=>{
+          let safeName = file.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+          const row=document.createElement('div');row.className='file-preview-row';
+          row.style.cssText='padding:10px 16px;border-radius:var(--radius-sm);margin-top:0;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);';
+          row.innerHTML=`<div class="md-card-header-icon" style="background:var(--primary-light);width:32px;height:32px;"><span class="material-icons-round" style="font-size:16px">insert_drive_file</span></div><div class="file-info" style="margin-left:10px;text-align:left;"><div class="file-name" style="font-size:14px;max-width:180px;">${file.name}</div><div class="file-size" style="font-size:11px;margin-top:2px;">${fmtBytes(file.size)}</div></div><button class="md-btn md-btn-filled" style="padding:0 14px;height:32px;font-size:12px;border-radius:var(--radius-sm);" onclick="const a=document.createElement('a');a.href='${file.url}';a.download='${safeName}';document.body.appendChild(a);a.click();document.body.removeChild(a);"><span class="material-icons-round" style="font-size:14px">save_alt</span> SAVE</button>`;
+          filesListEl.appendChild(row);
+        });
+      }
+      document.getElementById('recv-success').classList.add('visible');
+  }
   
   // Modern UI Recent List
   const list = document.getElementById('modern-recent-list');
-  if(list && receivedFiles.length > 0) {
+  if(list && receivedFiles.length > 0 && !isGroupMode) {
       if(list.children[0] && list.children[0].innerText.includes('No recent')) list.innerHTML = '';
       
       // Add each received file with a download button
-      receivedFiles.forEach((file, index) => {
+      receivedFiles.forEach((file) => {
+        let safeName = file.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
         const item = document.createElement('div');
         item.className = 'recent-item';
         item.innerHTML = `
@@ -1999,12 +2358,37 @@ function finishReceiveBatch(stopStream){
             <div class="recent-name">${file.name}</div>
             <div class="recent-meta">Received · ${fmtBytes(file.size)}</div>
           </div>
-          <button class="md-btn md-btn-filled" style="height:32px; border-radius:16px; font-size:12px; padding:0 16px; min-width:80px; margin-left:12px; background:var(--primary);" onclick="downloadBatchFile(${index})">
+          <button class="md-btn md-btn-filled" style="height:32px; border-radius:16px; font-size:12px; padding:0 16px; min-width:80px; margin-left:12px; background:var(--primary);" onclick="const a=document.createElement('a');a.href='${file.url}';a.download='${safeName}';document.body.appendChild(a);a.click();document.body.removeChild(a);">
             Save
           </button>
         `;
         list.insertBefore(item, list.firstChild);
+        
+        // Toast & Notification for Group files
+        if(isGroupMode) {
+           const senderName = receivedBatchMeta?.sender || 'Someone';
+           if(window.addAppNotification) {
+               window.addAppNotification('File Received', `${senderName} shared ${file.name}`, 'insert_drive_file');
+           }
+        }
       });
+  }
+
+  // Appending to Chat Inbox
+  if(typeof window.appendChatMessage === 'function' && typeof receivedBatchMeta !== 'undefined' && receivedBatchMeta && receivedBatchMeta.sender) {
+      let fileInfoStr = receivedFiles.map(f => `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span class="material-icons-round" style="font-size:14px;color:var(--primary);">insert_drive_file</span> <span>${f.name} <span style="color:#888;">(${fmtBytes(f.size)})</span></span></div>`).join('');
+      let downloadHtml = receivedFiles.map((f) => {
+          let safeName = f.name.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+          return `<button class="btn-primary" style="padding:4px 10px; font-size:11px; margin-right:6px; margin-bottom:4px; border-radius:12px; border:none; cursor:pointer;" onclick="const a=document.createElement('a');a.href='${f.url}';a.download='${safeName}';document.body.appendChild(a);a.click();document.body.removeChild(a);"><span class="material-icons-round" style="font-size:12px;vertical-align:middle;">download</span> Save</button>`;
+      }).join('');
+      let bubbleHtml = `<div style="background:#1e1e1e;border-radius:8px;overflow:hidden;margin-top:8px;border:1px solid rgba(255,255,255,0.1);text-align:left;"><div style="background:#2d2d2d;padding:6px 12px;display:flex;align-items:center;"><span style="font-size:11px;color:#a0a0a0;font-weight:600;display:flex;align-items:center;gap:4px;"><span class="material-icons-round" style="font-size:14px;">folder_zip</span> Received Files</span></div><div style="padding:12px;font-size:12px;line-height:1.5;color:#e0e0e0;">${fileInfoStr}<div style="margin-top:10px;">${downloadHtml}</div></div></div>`;
+      window.appendChatMessage(receivedBatchMeta.sender, bubbleHtml, false, true);
+      
+      const chatModal = document.getElementById('chat-modal-overlay');
+      if(chatModal && !chatModal.classList.contains('active')) {
+          const btn = document.getElementById('modern-btn-chat');
+          if(btn) btn.click();
+      }
   }
 }
 
@@ -2292,7 +2676,7 @@ window.connectToSender = function() {
         return;
     }
     
-    activeConnections.push(conn);
+    if (!activeConnections.find(c => c.peer === conn.peer)) activeConnections.push(conn);
     
     // We should also listen for files coming BACK to us on this connection!
     conn.on('open', () => {
@@ -2326,10 +2710,12 @@ async function autoInitHost() {
         
         peer.on('connection', conn => {
             console.log('[SyncDrop] Incoming modern connection:', conn.peer);
-            activeConnections.push(conn);
+            const existingPeers = activeConnections.filter(c => c.open).map(c => c.peer);
+            if (!activeConnections.find(c => c.peer === conn.peer)) activeConnections.push(conn);
             
             conn.on('open', () => {
                 console.log('[SyncDrop] DataChannel open (Host)');
+                if (existingPeers.length > 0) conn.send(JSON.stringify({ type: 'mesh-peers', peers: existingPeers }));
                 if(typeof listenForFile === 'function') listenForFile(conn);
             });
             conn.on('error', err => console.error('Host conn error:', err));
@@ -2343,22 +2729,53 @@ autoInitHost();
 // Auto-send files when selected
 const origUpdatePreview = updateFilePreviewList;
 updateFilePreviewList = function() {
-    origUpdatePreview();
-    if(selectedFiles.length > 0 && typeof activeConnections !== 'undefined' && activeConnections.length > 0) {
+    const isGroupMode = typeof activeConnections !== 'undefined' && activeConnections.length > 1;
+    const validConns = typeof activeConnections !== 'undefined' ? activeConnections.filter(c => c.open) : [];
+    
+    if (!isGroupMode) origUpdatePreview();
+    else {
+        const container = document.getElementById('file-preview-container');
+        if (selectedFiles.length===0) {
+            if(container) container.classList.add('hidden');
+        }
+    }
+    
+    if(selectedFiles.length > 0 && validConns.length > 0) {
         let sent = false;
-        
-        // Clean up closed connections first
-        activeConnections = activeConnections.filter(c => c && (c.open || !c.peerConnection || c.peerConnection.signalingState !== 'closed'));
-        
-        // Try to send on the first open connection
-        for (let i = 0; i < activeConnections.length; i++) {
-            const conn = activeConnections[i];
-            if (conn.open) {
-                console.log("Auto-sending files over connection!");
-                if(typeof sendInChunks === 'function') sendInChunks(conn);
-                sent = true;
-                break;
+        let firstFinished = false;
+        for (let i = 0; i < validConns.length; i++) {
+            const conn = validConns[i];
+            console.log("Auto-sending files over connection!");
+            if(typeof sendInChunks === 'function') {
+                sendInChunks(conn, isGroupMode, () => {
+                    if (!firstFinished) {
+                        firstFinished = true;
+                        
+                        // Modern UI Recent List
+                        const list = document.getElementById('modern-recent-list');
+                        let totalSize = selectedFiles.reduce((a,f)=>a+f.size,0);
+                        if(list && selectedFiles.length > 0 && !isGroupMode) {
+                            if(list.children[0] && list.children[0].innerText.includes('No recent')) list.innerHTML = '';
+                            list.innerHTML = `<div class="recent-item">
+                              <div class="recent-icon"><span class="material-icons-round">upload_file</span></div>
+                              <div class="recent-info">
+                                <div class="recent-name">Sent ${selectedFiles.length} File(s)</div>
+                                <div class="recent-meta">Just now · ${fmtBytes(totalSize)}</div>
+                              </div>
+                              <div class="recent-status"><span class="material-icons-round">check_circle</span></div>
+                            </div>` + list.innerHTML;
+                        }
+
+                        // Appending to Chat Inbox
+                        if(typeof window.appendChatMessage === 'function') {
+                            let fileInfoStr = selectedFiles.map(f => `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span class="material-icons-round" style="font-size:14px;color:var(--primary);">insert_drive_file</span> <span>${f.name} <span style="color:#888;">(${fmtBytes(f.size)})</span></span></div>`).join('');
+                            let bubbleHtml = `<div style="background:#1e1e1e;border-radius:8px;overflow:hidden;margin-top:8px;border:1px solid rgba(255,255,255,0.1);text-align:left;"><div style="background:#2d2d2d;padding:6px 12px;display:flex;align-items:center;"><span style="font-size:11px;color:#a0a0a0;font-weight:600;display:flex;align-items:center;gap:4px;"><span class="material-icons-round" style="font-size:14px;">folder_zip</span> Shared Files</span></div><div style="padding:12px;font-size:12px;line-height:1.5;color:#e0e0e0;">${fileInfoStr}</div></div>`;
+                            window.appendChatMessage('Me', bubbleHtml, true, true);
+                        }
+                    }
+                });
             }
+            sent = true;
         }
         
         // If none are open yet, queue it on the most recently added connection
@@ -2444,7 +2861,7 @@ setTimeout(() => {
         activeConnections.forEach(conn => {
             if(conn.open) {
                 try {
-                    conn.send(JSON.stringify({ type: 'code-share', content: codeContent }));
+                    conn.send(JSON.stringify({ type: 'code-share', sender: window.myPeer ? window.myPeer.id.substring(0,6) : 'Unknown', content: codeContent }));
                     sent = true;
                 } catch(e) {
                     console.error("Code share error:", e);
@@ -2454,7 +2871,7 @@ setTimeout(() => {
                     setTimeout(() => {
                         if (conn.open) {
                             try {
-                                conn.send(JSON.stringify({ type: 'code-share', content: codeContent }));
+                                conn.send(JSON.stringify({ type: 'code-share', sender: window.myPeer ? window.myPeer.id.substring(0,6) : 'Unknown', content: codeContent }));
                                 sent = true;
                                 // Close modal after delayed send
                                 if(sent) {
@@ -2471,6 +2888,11 @@ setTimeout(() => {
     if(sent) {
         document.getElementById('code-modal-overlay').classList.remove('active');
         
+        if(typeof appendChatMessage === 'function') {
+            const snippetHtml = `<div style="background:#1e1e1e;border-radius:8px;overflow:hidden;margin-top:8px;border:1px solid rgba(255,255,255,0.1);text-align:left;"><div style="background:#2d2d2d;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#a0a0a0;font-family:monospace;font-weight:600;">Code Snippet</span><button style="background:none;border:none;color:#a0a0a0;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px;" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(codeContent)}')); this.innerHTML='<span class=\\'material-icons-round\\' style=\\'font-size:14px;\\'>check</span> Copied!'; setTimeout(()=>this.innerHTML='<span class=\\'material-icons-round\\' style=\\'font-size:14px;\\'>content_copy</span> Copy',2000);"><span class="material-icons-round" style="font-size:14px;">content_copy</span> Copy</button></div><div style="padding:12px;overflow-x:auto;max-height:250px;font-family:monospace;font-size:12px;line-height:1.5;color:#e0e0e0;">${highlight(codeContent)}</div></div>`;
+            appendChatMessage('Me', snippetHtml, true, true);
+        }
+
         // Add to Recent List
         const list = document.getElementById('modern-recent-list');
         if(list.children[0] && list.children[0].innerText.includes('No recent')) list.innerHTML = '';
@@ -2488,15 +2910,144 @@ setTimeout(() => {
     }
   });
 
+  // Chat Actions
+  const chatBtn = document.getElementById('modern-btn-chat');
+  if (chatBtn) {
+      chatBtn.addEventListener('click', () => {
+        document.getElementById('chat-modal-overlay').classList.add('active');
+      });
+  }
+  const closeChatModal = document.getElementById('close-chat-modal');
+  if (closeChatModal) {
+      closeChatModal.addEventListener('click', () => {
+        document.getElementById('chat-modal-overlay').classList.remove('active');
+      });
+  }
+
+  function appendChatMessage(sender, text, isSelf, isHtml=false) {
+    const msgs = document.getElementById('chat-messages');
+    if (!msgs) return;
+    
+    let content = isHtml ? text : text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'chat-bubble ' + (isSelf ? 'mine' : 'theirs');
+    
+    if (isSelf) {
+      msgDiv.innerHTML = `<div>${content}</div>`;
+    } else {
+      msgDiv.innerHTML = `<div style="font-size:11px; color:var(--primary); margin-bottom:4px; font-weight:700;">${sender}</div><div>${content}</div>`;
+    }
+    
+    msgs.appendChild(msgDiv);
+    
+    // Add meta timestamp
+    const metaDiv = document.createElement('div');
+    metaDiv.className = 'chat-meta';
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    metaDiv.innerText = time;
+    msgs.appendChild(metaDiv);
+    
+    msgs.scrollTop = msgs.scrollHeight;
+    
+    // Trigger notification
+    if(!isSelf && window.addAppNotification) {
+      window.addAppNotification(sender, 'New chat message', 'forum');
+    }
+  }
+  window.appendChatMessage = appendChatMessage;
+
+  const chatSendBtn = document.getElementById('chat-send-btn');
+  if (chatSendBtn) {
+      chatSendBtn.addEventListener('click', sendChatMessage);
+  }
+  const chatInput = document.getElementById('chat-input');
+  if (chatInput) {
+      chatInput.addEventListener('keypress', e => {
+          if(e.key === 'Enter') sendChatMessage();
+      });
+  }
+
+  function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      if (!input) return;
+      const text = input.value.trim();
+      if(!text) return;
+      
+      let sent = false;
+      if(typeof activeConnections !== 'undefined') {
+          activeConnections.forEach(conn => {
+              if(conn.open) {
+                  try {
+                      conn.send(JSON.stringify({ type: 'chat-msg', sender: window.myPeer ? window.myPeer.id.substring(0,6) : 'Unknown', text: text }));
+                      sent = true;
+                  } catch(e) {}
+              }
+          });
+      }
+      
+      if(sent) {
+          appendChatMessage('Me', text, true);
+          input.value = '';
+      } else {
+          alert('Not connected to anyone in the group.');
+      }
+  }
+
+  window.addEventListener('chat-msg-received', (e) => {
+      const msg = e.detail;
+      appendChatMessage(msg.sender, msg.text, false);
+      const chatModal = document.getElementById('chat-modal-overlay');
+      if(chatModal && !chatModal.classList.contains('active')) {
+          const btn = document.getElementById('modern-btn-chat');
+          if (btn) {
+              btn.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.6)';
+              setTimeout(() => btn.style.boxShadow = '', 2000);
+          }
+      }
+  });
+
+  // Chat Attachment Actions
+  const cbPhotos = document.getElementById('chat-btn-photos');
+  if(cbPhotos) cbPhotos.addEventListener('click', () => { document.getElementById('chat-modal-overlay').classList.remove('active'); document.getElementById('modern-btn-photos').click(); });
+  
+  const cbFiles = document.getElementById('chat-btn-files');
+  if(cbFiles) cbFiles.addEventListener('click', () => { document.getElementById('chat-modal-overlay').classList.remove('active'); document.getElementById('modern-btn-files').click(); });
+
+  const cbFolders = document.getElementById('chat-btn-folders');
+  if(cbFolders) cbFolders.addEventListener('click', () => { document.getElementById('modern-btn-folders').click(); });
+
+  const cbCode = document.getElementById('chat-btn-code');
+  if(cbCode) cbCode.addEventListener('click', () => { document.getElementById('chat-modal-overlay').classList.remove('active'); document.getElementById('modern-btn-clip').click(); });
+
   // Listen for received code-share
   window.addEventListener('code-share-received', (e) => {
-    const code = e.detail;
-    document.getElementById('code-modal-title').textContent = "Received Code/Text";
-    document.getElementById('modern-code-textarea').value = code;
-    document.getElementById('modern-code-textarea').readOnly = true;
-    document.getElementById('modern-send-code-execute').style.display = 'block';
-    document.getElementById('modern-send-code-execute').textContent = 'Copy to Clipboard';
-    document.getElementById('code-modal-overlay').classList.add('active');
+    const data = e.detail;
+    const code = typeof data === 'string' ? data : data.content;
+    const sender = typeof data === 'string' ? 'Remote' : data.sender;
+    
+    const validConns = typeof activeConnections !== 'undefined' ? activeConnections.filter(c => c.open) : [];
+    const isGroupMode = validConns.length > 1;
+
+    if(isGroupMode) {
+        if(typeof appendChatMessage === 'function') {
+            const snippetHtml = `<div style="background:#1e1e1e;border-radius:8px;overflow:hidden;margin-top:8px;border:1px solid rgba(255,255,255,0.1);text-align:left;"><div style="background:#2d2d2d;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#a0a0a0;font-family:monospace;font-weight:600;">Code Snippet</span><button style="background:none;border:none;color:#a0a0a0;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px;" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(code)}')); this.innerHTML='<span class=\\'material-icons-round\\' style=\\'font-size:14px;\\'>check</span> Copied!'; setTimeout(()=>this.innerHTML='<span class=\\'material-icons-round\\' style=\\'font-size:14px;\\'>content_copy</span> Copy',2000);"><span class="material-icons-round" style="font-size:14px;">content_copy</span> Copy</button></div><div style="padding:12px;overflow-x:auto;max-height:250px;font-family:monospace;font-size:12px;line-height:1.5;color:#e0e0e0;">${highlight(code)}</div></div>`;
+            appendChatMessage(sender, snippetHtml, false, true);
+            
+            const chatModal = document.getElementById('chat-modal-overlay');
+            if(chatModal && !chatModal.classList.contains('active')) {
+                const btn = document.getElementById('modern-btn-chat');
+                if(btn) btn.click();
+            }
+        }
+    } else {
+        document.getElementById('code-modal-title').textContent = "Received Code/Text";
+        document.getElementById('modern-code-textarea').value = code;
+        document.getElementById('modern-code-textarea').readOnly = true;
+        document.getElementById('modern-send-code-execute').style.display = 'block';
+        document.getElementById('modern-send-code-execute').textContent = 'Copy to Clipboard';
+        document.getElementById('code-modal-overlay').classList.add('active');
+    }
 
     // Add to Recent List
     const list = document.getElementById('modern-recent-list');
@@ -2517,12 +3068,22 @@ setTimeout(() => {
   });
 
   // UI State Watcher (Polls legacy status to update modern UI)
+  let lastConnCount = 0;
   setInterval(() => {
-    const hasActiveConns = typeof activeConnections !== 'undefined' && activeConnections && activeConnections.length > 0;
+    const validConns = typeof activeConnections !== 'undefined' ? activeConnections.filter(c => c.open) : [];
+    const hasActiveConns = validConns.length > 0;
+    
+    if(validConns.length > lastConnCount) {
+       if(window.addAppNotification) window.addAppNotification('New Connection', 'A peer has joined the session.', 'devices');
+    } else if (validConns.length < lastConnCount && lastConnCount > 0) {
+       if(window.addAppNotification) window.addAppNotification('Disconnected', 'A peer has left the session.', 'link_off');
+    }
+    lastConnCount = validConns.length;
+
     if (hasActiveConns) {
       document.getElementById('modern-disconnected-state').style.display = 'none';
       document.getElementById('modern-connected-state').style.display = 'flex';
-      document.getElementById('modern-peer-name').textContent = "Remote Peer";
+      document.getElementById('modern-peer-name').textContent = validConns.length > 1 ? `${validConns.length} Peers in Group` : "1 Peer Connected";
       document.getElementById('modern-status-dot').style.background = 'var(--success)';
       document.getElementById('modern-status-text').textContent = "Connected";
     } else {
@@ -2535,6 +3096,188 @@ setTimeout(() => {
   }, 1000);
 
 }, 1500);
+</script>
+<style>
+.toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toast { background: #2d2d2d; color: white; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; animation: slideIn 0.3s ease-out; }
+.toast-icon { background: var(--primary); color: white; padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.toast-title { font-weight: 600; font-size: 13px; }
+.toast-desc { font-size: 11px; opacity: 0.8; }
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+</style>
+<div id="toast-container" class="toast-container"></div>
+<script>
+    let unreadNotifCount = 0;
+    
+    if ('Notification' in window) {
+      document.addEventListener('click', () => {
+        if (Notification.permission === 'default') {
+          Notification.requestPermission();
+        }
+      }, { once: true });
+    }
+
+    window.addAppNotification = function(title, desc, iconName) {
+      // 1. In-App Toast
+      const container = document.getElementById('toast-container');
+      if (container) {
+          const toast = document.createElement('div');
+          toast.className = 'toast';
+          toast.innerHTML = `
+            <div class="toast-icon"><span class="material-icons-round">${iconName}</span></div>
+            <div class="toast-content">
+              <div class="toast-title">${title}</div>
+              <div class="toast-desc">${desc}</div>
+            </div>
+          `;
+          toast.onclick = () => {
+             document.getElementById('notif-dropdown').classList.add('active');
+             toast.remove();
+          };
+          container.appendChild(toast);
+          setTimeout(() => {
+              toast.classList.add('hiding');
+              setTimeout(() => toast.remove(), 400);
+          }, 4000);
+      }
+
+      // 2. Native OS Notification
+      if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+          const n = new Notification(title, {
+              body: desc,
+              icon: 'https://cdn-icons-png.flaticon.com/512/3114/3114883.png'
+          });
+          n.onclick = () => {
+              window.focus();
+              document.getElementById('notif-dropdown').classList.add('active');
+          };
+      }
+      
+      // 3. Add to History Panel
+      const list = document.getElementById('notif-list');
+      if (list) {
+          const empty = document.getElementById('notif-empty-state');
+          if (empty) empty.style.display = 'none';
+          
+          const item = document.createElement('div');
+          item.className = 'recent-item';
+          item.style.cursor = 'pointer';
+          item.style.background = 'rgba(239, 68, 68, 0.1)'; // Unread indicator
+          item.innerHTML = `
+            <div class="recent-icon" style="color: var(--primary);"><span class="material-icons-round">${iconName}</span></div>
+            <div class="recent-info">
+              <div class="recent-name" style="font-weight: bold;">${title}</div>
+              <div class="recent-meta">${desc}</div>
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); white-space: nowrap;">Just now</div>
+          `;
+          
+          item.onclick = () => {
+            if(item.style.background !== 'transparent') {
+                item.style.background = 'transparent';
+                unreadNotifCount = Math.max(0, unreadNotifCount - 1);
+                updateNotifBadge();
+            }
+          };
+          
+          list.insertBefore(item, list.firstChild);
+      }
+      
+      // 4. Update Badge
+      unreadNotifCount++;
+      updateNotifBadge();
+    };
+
+    function updateNotifBadge() {
+        const badge = document.getElementById('notif-badge');
+        if(!badge) return;
+        if(unreadNotifCount > 0) {
+            badge.style.display = 'block';
+            badge.innerText = unreadNotifCount > 9 ? '9+' : unreadNotifCount;
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    const bellBtn = document.getElementById('notif-bell-btn');
+    if(bellBtn) {
+        bellBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // prevent document click from closing it immediately
+            document.getElementById('notif-dropdown').classList.toggle('active');
+        });
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('notif-dropdown');
+        if(dropdown && dropdown.classList.contains('active') && !dropdown.contains(e.target) && !document.getElementById('notif-bell-btn').contains(e.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+    
+    const markReadBtn = document.getElementById('notif-mark-read-btn');
+    if(markReadBtn) {
+        markReadBtn.addEventListener('click', () => {
+            unreadNotifCount = 0;
+            updateNotifBadge();
+            const items = document.getElementById('notif-list').querySelectorAll('.recent-item');
+            items.forEach(item => item.style.background = 'transparent');
+        });
+    }
+
+    // Drag & Drop Logic
+    const globalOverlay = document.getElementById('global-drag-overlay');
+    const uiDropZone = document.getElementById('ui-drop-zone');
+    let dragCounter = 0;
+
+    window.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        if(e.dataTransfer.types.includes('Files')) {
+            dragCounter++;
+            globalOverlay.classList.add('active');
+        }
+    });
+    window.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        if(e.dataTransfer.types.includes('Files')) {
+            dragCounter--;
+            if(dragCounter === 0) globalOverlay.classList.remove('active');
+        }
+    });
+    window.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+    window.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dragCounter = 0;
+        globalOverlay.classList.remove('active');
+        if(e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handleFileSelect(e.dataTransfer.files);
+        }
+    });
+
+    if(uiDropZone) {
+        uiDropZone.addEventListener('click', () => {
+            document.getElementById('file-input').click();
+        });
+        uiDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uiDropZone.classList.add('drag-over');
+        });
+        uiDropZone.addEventListener('dragleave', () => {
+            uiDropZone.classList.remove('drag-over');
+        });
+        uiDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // prevent global drop
+            uiDropZone.classList.remove('drag-over');
+            globalOverlay.classList.remove('active');
+            dragCounter = 0;
+            if(e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleFileSelect(e.dataTransfer.files);
+            }
+        });
+    }
 </script>
 </body>
 </html>
